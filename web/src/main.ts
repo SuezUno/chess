@@ -1,3 +1,4 @@
+import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import type { Key } from 'chessground/types';
 import 'chessground/assets/chessground.base.css';
@@ -69,13 +70,26 @@ async function renderErrors(analyzed: GameRow[]) {
 function showPosition(m: MoveRow, g: GameRow) {
   const dialog = $<HTMLDialogElement>('position');
   const arrow = (uci: string, brush: string) => ({ orig: uci.slice(0, 2) as Key, dest: uci.slice(2, 4) as Key, brush });
-  Chessground($('board'), {
+  const shapes = [arrow(m.uci, 'red'), ...(m.bestUci ? [arrow(m.bestUci, 'green')] : [])];
+  const cg = Chessground($('board'), {
     fen: m.fenBefore,
     orientation: g.userColor,
     viewOnly: true,
     coordinates: false,
-    drawable: { autoShapes: [arrow(m.uci, 'red'), ...(m.bestUci ? [arrow(m.bestUci, 'green')] : [])] },
+    drawable: { autoShapes: shapes },
   });
+  const reset = () => cg.set({ fen: m.fenBefore, lastMove: undefined, drawable: { autoShapes: shapes } });
+  // Play from the starting position each time; chess.js computes the FEN (handles castling, en passant, promotion).
+  const play = (uci: string) => {
+    reset();
+    const pos = new Chess(m.fenBefore);
+    pos.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] });
+    cg.set({ fen: pos.fen(), lastMove: [uci.slice(0, 2) as Key, uci.slice(2, 4) as Key], drawable: { autoShapes: [] } });
+  };
+  $('play-mine').onclick = () => play(m.uci);
+  $<HTMLButtonElement>('play-best').disabled = !m.bestUci;
+  $('play-best').onclick = () => m.bestUci && play(m.bestUci);
+  $('play-reset').onclick = reset;
   $('position-text').innerHTML = `Jugaste <b class="bad">${m.san}</b>; lo mejor era <b class="good">${m.bestSan ?? '?'}</b>.
     Tu probabilidad de ganar pasó de ${Math.round(m.winBefore)}% a ${Math.round(m.winAfter)}%.
     ${g.url?.startsWith('https://www.chess.com/') ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">Ver partida</a>` : ''}`;
