@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1f2a24">
+  <title>Entrenador de ajedrez</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header><h1>Entrenador</h1><span id="account"></span></header>
+
+  <section id="setup" hidden>
+    <h2>Conecta tu cuenta</h2>
+    <p>Escribe tu usuario de chess.com. Tus partidas se descargan y se analizan en este dispositivo.</p>
+    <form id="link-form">
+      <input id="username" autocomplete="username" placeholder="Usuario de chess.com" required>
+      <button>Conectar</button>
+    </form>
+  </section>
+
+  <main id="main" hidden>
+    <section>
+      <h2>Partidas</h2>
+      <p id="counts"></p>
+      <p id="sync-status" class="muted"></p>
+      <button id="sync">Sincronizar</button>
+    </section>
+
+    <section>
+      <h2>Analizar</h2>
+      <div class="row">
+        <label>Partidas <select id="limit"><option>10</option><option selected>30</option><option>100</option><option>500</option></select></label>
+        <label>Profundidad <select id="depth"><option>10</option><option>12</option><option>14</option><option>16</option></select></label>
+      </div>
+      <button id="analyze">Analizar las más recientes</button>
+      <button id="stop" hidden>Parar</button>
+      <p id="analyze-status" class="muted"></p>
+    </section>
+
+    <section>
+      <h2>Tus errores</h2>
+      <p id="summary" class="muted"></p>
+      <ul id="errors"></ul>
+    </section>
+  </main>
+
+  <dialog id="position">
+    <div id="board" class="cg-wrap"></div>
+    <p id="position-text"></p>
+    <button id="close">Cerrar</button>
+  </dialog>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

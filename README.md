@@ -1,21 +1,22 @@
 # Chess trainer
 
-Entrenador personal de ajedrez: importa tus partidas de chess.com, las analiza con Stockfish,
-detecta tus errores recurrentes y te propone bloques diarios de entrenamiento que eliges tú.
+Entrenador personal de ajedrez: importa tus partidas de chess.com, las analiza con Stockfish **en tu propio
+dispositivo** y te enseña tus errores para entrenarlos. Sin servidor ni cuentas: tus datos no salen del móvil o PC.
 
-Estado: fase 0–1 (sincronización y análisis por línea de comandos). Ver [docs/plan.md](docs/plan.md).
+Estado: primera versión web (sincronizar, analizar, ver errores en el tablero). Ver [docs/plan.md](docs/plan.md).
 
-## Puesta en marcha
+## Usarla
+Abre la web publicada en GitHub Pages, escribe tu usuario de chess.com y pulsa *Analizar*. En el móvil, «Añadir a
+pantalla de inicio» la instala como app.
 
+## Desarrollo
 ```bash
-python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt      # Linux/macOS: .venv/bin/pip
-winget install Stockfish.Stockfish                  # o el paquete de tu sistema
-cp .env.example .env                                # rellena STOCKFISH_PATH si no está en PATH
-python -m trainer link --user yo --chesscom TU_USUARIO
-python -m trainer sync --user yo
-python -m trainer analyze --user yo --limit 50
-python -m trainer report --user yo
+cd web
+npm install
+npm run dev      # http://localhost:5173
+npm test
 ```
 
-Las claves y rutas viven solo en `.env` o en variables de entorno; nunca en el código.
+La carpeta `trainer/` es una versión en Python para analizar el historial completo en un PC (ver `CLAUDE.md`).
+
+Licencia: GPL-3.0 (usa Stockfish y chessground, ambos GPL-3.0).

@@ -1,0 +1,1 @@
+{"name":"chess-trainer-web","private":true,"type":"module","scripts":{"dev":"vite","build":"tsc --noEmit && vite build","test":"vitest run"},"dependencies":{"chess.js":"^1.4.0","chessground":"^9.2.1","idb":"^8.0.4","stockfish":"^19.0.1"},"devDependencies":{"typescript":"^7.0.2","vite":"^8.3.8","vitest":"^5.1.1"}}

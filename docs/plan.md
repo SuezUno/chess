@@ -11,6 +11,17 @@
 - **Motor:** Stockfish 19 local (GPL-3, proceso aparte). Un proceso por worker.
 - **Almacenamiento:** SQLite (`data/trainer.db`). Migrable a Postgres si llega a multiusuario real.
 
+## Cambio de rumbo (19/11/2026): app standalone
+- Todo corre en el dispositivo: la web descarga de chess.com (CORS abierto), analiza con Stockfish WASM
+  (build lite, un hilo, sin cabeceras especiales) y guarda en IndexedDB. Sin backend.
+- Una sola base de código: la web (PWA) es la app; el APK de Android saldrá envolviéndola con Capacitor,
+  y si el motor web se queda corto en el móvil, con Stockfish nativo.
+- Repo público + GitHub Pages. Licencia GPL-3.0 (Stockfish, chessground).
+- Clave de Gemini: la pone cada usuario en Ajustes y se queda en su dispositivo.
+- El Python se mantiene para analizar el historial completo en PC y como base de datos de ejemplo;
+  falta un import de esos datos en la web.
+- Medido en PC: 2,2 s/partida a profundidad 12 con un hilo. Falta medir en el móvil.
+
 ## Fases
 | Fase | Contenido | Aceptación | Estado |
 |---|---|---|---|
