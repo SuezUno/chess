@@ -3,58 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1f2a24">
+  <meta name="theme-color" content="#14201a">
   <title>Entrenador de ajedrez</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
 </head>
 <body>
-  <header><h1>Entrenador</h1><span id="account"></span></header>
+  <header class="top">
+    <div class="brand"><img src="icon.svg" alt="" width="32" height="32"><span>Entrenador</span></div>
+    <span id="account" class="pill"></span>
+  </header>
 
-  <section id="setup" hidden>
-    <h2>Conecta tu cuenta</h2>
-    <p>Escribe tu usuario de chess.com. Tus partidas se descargan y se analizan en este dispositivo.</p>
+  <section id="setup" class="card hero" hidden>
+    <p class="eyebrow">Tu entrenador personal</p>
+    <h1>Aprende de tus propias partidas</h1>
+    <p class="muted">Escribe tu usuario de chess.com. Tus partidas se descargan y se analizan en este dispositivo: nada sale de él.</p>
     <form id="link-form">
-      <input id="username" autocomplete="username" placeholder="Usuario de chess.com" required>
+      <input id="username" autocomplete="username" placeholder="Usuario de chess.com" aria-label="Usuario de chess.com" required>
       <button>Conectar</button>
     </form>
   </section>
 
   <main id="main" hidden>
-    <section>
-      <h2>Partidas</h2>
-      <p id="counts"></p>
-      <p id="sync-status" class="muted"></p>
-      <button id="sync">Sincronizar</button>
-    </section>
+    <div class="stats">
+      <div class="stat"><span class="label">Elo</span><b id="stat-elo">–</b><small id="stat-elo-sub"></small></div>
+      <div class="stat"><span class="label">Partidas</span><b id="stat-games">–</b><small id="stat-games-sub"></small></div>
+      <div class="stat"><span class="label">Errores</span><b id="stat-errors">–</b><small id="stat-errors-sub"></small></div>
+    </div>
 
-    <section>
-      <h2>Analizar</h2>
-      <div class="row">
-        <label>Partidas <select id="limit"><option>10</option><option selected>30</option><option>100</option><option>500</option></select></label>
-        <label>Profundidad <select id="depth"><option>10</option><option>12</option><option>14</option><option>16</option></select></label>
+    <section class="card">
+      <div class="card-head"><h2>Tu perfil</h2><span id="profile-note" class="muted small"></span></div>
+      <div class="profile-cols">
+        <div><h3 class="good">Fortalezas</h3><ul id="strengths" class="findings"></ul></div>
+        <div><h3 class="bad">A mejorar</h3><ul id="weaknesses" class="findings"></ul></div>
       </div>
-      <button id="analyze">Analizar las más recientes</button>
-      <button id="stop" hidden>Parar</button>
-      <p id="analyze-status" class="muted"></p>
     </section>
 
-    <section>
-      <h2>Tus errores</h2>
-      <p id="summary" class="muted"></p>
+    <section class="card">
+      <div class="card-head"><h2>Tus errores</h2><span id="summary" class="muted small"></span></div>
       <ul id="errors"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Datos</h2>
+      <div class="data-row">
+        <div>
+          <p id="sync-status" class="muted small"></p>
+          <button id="sync" class="ghost">Sincronizar</button>
+        </div>
+        <div>
+          <div class="row">
+            <label>Partidas <select id="limit"><option>10</option><option selected>30</option><option>100</option><option>500</option></select></label>
+            <label>Profundidad <select id="depth"><option>10</option><option>12</option><option>14</option><option>16</option></select></label>
+          </div>
+          <button id="analyze">Analizar las más recientes</button>
+          <button id="stop" class="ghost" hidden>Parar</button>
+          <progress id="analyze-progress" max="1" value="0" hidden></progress>
+          <p id="analyze-status" class="muted small"></p>
+        </div>
+      </div>
     </section>
   </main>
 
   <dialog id="position">
+    <div class="dialog-head"><b id="position-title"></b><button id="close" class="icon" aria-label="Cerrar">✕</button></div>
     <div id="board" class="cg-wrap"></div>
-    <div class="row">
+    <div class="segmented">
       <button id="play-mine">▶ Tu jugada</button>
       <button id="play-best">▶ Mejor</button>
       <button id="play-reset" aria-label="Volver a la posición">↺</button>
     </div>
     <p id="position-text"></p>
-    <button id="close">Cerrar</button>
   </dialog>
 
   <script type="module" src="/src/main.ts"></script>

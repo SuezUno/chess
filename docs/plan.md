@@ -27,7 +27,7 @@
 |---|---|---|---|
 | 0 | Prueba real: descargar partidas y analizar con Stockfish | Clasificación de jugadas sobre partidas reales | **Hecha** |
 | 1 | Sincronización incremental sin duplicados, estado y errores, análisis en lote | 2.ª sync = 0 nuevas; error queda registrado; `status` | **Hecha (CLI)**; falta import PGN y sync automática |
-| 2 | Hallazgos y perfil con evidencias y confianza (pieza colgada, amenaza no vista, castigo no visto, apuros de tiempo, finales, aperturas) | ≥3 patrones y ≥2 fortalezas con partidas de respaldo | Siguiente |
+| 2 | Hallazgos y perfil con evidencias y confianza (pieza colgada, amenaza no vista, castigo no visto, apuros de tiempo, finales, aperturas) | ≥3 patrones y ≥2 fortalezas con partidas de respaldo | **En curso (web):** cada hallazgo se compara con tus rivales en las mismas partidas (chess.com empareja por Elo) con z-test: causas de error, castigo, fases, conversión, reloj; aperturas frente al resto de tus partidas. Con 500 partidas reales: 3 debilidades y 1 fortaleza |
 | 3 | Ejercicios desde posiciones propias, validados con multi-PV; repaso espaciado | Cada ejercicio enlaza a su hallazgo; solución única y verificada | |
 | 4 | Web/PWA: bloques diarios elegibles, tablero jugable, progreso por bloque | Cualquier combinación de bloques, en momentos distintos, sin perder progreso | |
 | 5 | Aperturas: identificación, desviaciones frente a maestros, sugerencias de repertorio | Sugerencia razonada (por qué encaja / inconvenientes), no obligatoria | |
