@@ -37,3 +37,6 @@
 - Dónde se aloja el servidor (un servidor doméstico modesto va justo para Stockfish en lote; analizar en el PC de trabajo o en un VPS).
 - Fuente de partidas de maestros para la fase 5: revisar licencia antes de usar (explorador de Lichess, TWIC...).
 - Sync automática: tarea periódica (p. ej. cada hora) en el servidor que se elija.
+
+## Import del análisis del Python (20/11/2026)
+`python -m trainer export --user <nombre> --out data/export.json` y en la web «Importar análisis» (Datos). No pisa partidas ya analizadas en el dispositivo. Sin probar en navegador.

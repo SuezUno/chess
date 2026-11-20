@@ -44,3 +44,25 @@ export async function saveAnalysis(game: GameRow, moves: MoveRow[], depth: numbe
   await tx.objectStore('games').put({ ...game, analyzedAt: new Date().toISOString(), analysisDepth: depth });
   await tx.done;
 }
+
+/** Import a file made by `python -m trainer export`. Keeps analysis already done on the device. Returns games added. */
+export async function importExport(json: string, accountId: string): Promise<number> {
+  const data = JSON.parse(json);
+  if (data?.version !== 1 || !Array.isArray(data.games)) throw new Error('Archivo no válido');
+  // Files without a username (older exports) are accepted.
+  if (data.username && `chesscom:${data.username.toLowerCase()}` !== accountId) throw new Error(`el archivo es de otra cuenta (${data.username})`);
+  const d = await db();
+  let added = 0;
+  for (const { moves, ...g } of data.games) {
+    const game: GameRow = { ...g, id: `${accountId}:${g.platformGameId}`, accountId };
+    const tx = d.transaction(['games', 'moves'], 'readwrite');
+    const have = (await tx.objectStore('games').get(game.id)) as GameRow | undefined;
+    if (!have?.analyzedAt) {
+      await tx.objectStore('games').put(game);
+      for (const m of moves) await tx.objectStore('moves').put({ ...m, gameId: game.id });
+      added++;
+    }
+    await tx.done;
+  }
+  return added;
+}
