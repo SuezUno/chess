@@ -49,6 +49,8 @@ export async function saveAnalysis(game: GameRow, moves: MoveRow[], depth: numbe
 export async function importExport(json: string, accountId: string): Promise<number> {
   const data = JSON.parse(json);
   if (data?.version !== 1 || !Array.isArray(data.games)) throw new Error('Archivo no válido');
+  // Files without a username (older exports) are accepted.
+  if (data.username && `chesscom:${data.username.toLowerCase()}` !== accountId) throw new Error(`el archivo es de otra cuenta (${data.username})`);
   const d = await db();
   let added = 0;
   for (const { moves, ...g } of data.games) {

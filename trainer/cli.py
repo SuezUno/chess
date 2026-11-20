@@ -64,8 +64,9 @@ def cmd_export(conn, args):
                       "opponent": g["opponent"], "opponentRating": g["opponent_rating"], "result": g["result"],
                       "resultDetail": g["result_detail"], "eco": g["eco"], "opening": g["opening"], "pgn": g["pgn"],
                       "analyzedAt": g["analyzed_at"], "analysisDepth": g["analysis_depth"], "moves": moves})
+    acc = conn.execute("SELECT username FROM platform_accounts WHERE user_id = ? AND platform = 'chesscom'", (user_id,)).fetchone()
     with open(args.out, "w", encoding="utf-8") as f:
-        json.dump({"version": 1, "games": games}, f, separators=(",", ":"))
+        json.dump({"version": 1, "username": acc["username"] if acc else None, "games": games}, f, separators=(",", ":"))
     print(f"{len(games)} partidas exportadas a {args.out}")
 
 
