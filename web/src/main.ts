@@ -8,7 +8,7 @@ import './style.css';
 import { analyzeGame } from './analysis';
 import { linkAccount, syncAccount } from './chesscom';
 import type { GameRow, MoveRow } from './core';
-import { db, getSetting, saveAnalysis, setSetting, type Account } from './db';
+import { db, getSetting, importExport, saveAnalysis, setSetting, type Account } from './db';
 import { Engine } from './engine';
 import { buildProfile, fmtPct, type Evidence, type Finding } from './profile';
 
@@ -220,6 +220,20 @@ async function onAnalyze() {
 
 $('link-form').addEventListener('submit', onLink);
 $('sync').onclick = onSync;
+$('import').onclick = () => $('import-file').click();
+$<HTMLInputElement>('import-file').onchange = async (e) => {
+  const input = e.target as HTMLInputElement;
+  const acc = await currentAccount();
+  if (!acc || !input.files?.[0]) return;
+  try {
+    const n = await importExport(await input.files[0].text(), acc.id);
+    await render();
+    $('sync-status').textContent = `${n} partidas importadas con su análisis`;
+  } catch (err) {
+    $('sync-status').textContent = `No se pudo importar: ${(err as Error).message}`;
+  }
+  input.value = '';
+};
 $('analyze').onclick = onAnalyze;
 $('stop').onclick = () => (stopRequested = true);
 $('close').onclick = () => $<HTMLDialogElement>('position').close();

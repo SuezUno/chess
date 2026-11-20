@@ -47,6 +47,28 @@ def cmd_analyze(conn, args):
     print(f"{n} partidas analizadas en {time.time() - t:.0f} s")
 
 
+def cmd_export(conn, args):
+    """Dump analyzed games + moves as JSON for the web app's «Importar» button (same field names as web/src/core.ts)."""
+    import json
+    user_id = _user(conn, args.user)
+    games = []
+    for g in conn.execute("SELECT * FROM games WHERE user_id = ? AND analyzed_at IS NOT NULL AND (rules IS NULL OR rules = 'chess')", (user_id,)):
+        moves = [{k: v for k, v in {"ply": m["ply"], "color": m["color"], "san": m["san"], "uci": m["uci"], "fenBefore": m["fen_before"],
+                  "clockSeconds": m["clock_seconds"], "evalBefore": m["eval_before"], "evalAfter": m["eval_after"],
+                  "bestUci": m["best_uci"], "bestSan": m["best_san"], "winBefore": m["win_before"],
+                  "winAfter": m["win_after"], "classification": m["classification"]}.items() if v is not None}
+                 for m in conn.execute("SELECT * FROM moves WHERE game_id = ? ORDER BY ply", (g["id"],))]
+        games.append({"platformGameId": g["platform_game_id"], "url": g["url"], "timeClass": g["time_class"],
+                      "timeControl": g["time_control"], "rated": bool(g["rated"]), "rules": g["rules"],
+                      "endTime": g["end_time"], "userColor": g["user_color"], "userRating": g["user_rating"],
+                      "opponent": g["opponent"], "opponentRating": g["opponent_rating"], "result": g["result"],
+                      "resultDetail": g["result_detail"], "eco": g["eco"], "opening": g["opening"], "pgn": g["pgn"],
+                      "analyzedAt": g["analyzed_at"], "analysisDepth": g["analysis_depth"], "moves": moves})
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump({"version": 1, "games": games}, f, separators=(",", ":"))
+    print(f"{len(games)} partidas exportadas a {args.out}")
+
+
 def _phase(fen: str, ply: int) -> str:
     if ply <= 20:
         return "apertura"
@@ -117,6 +139,8 @@ def main(argv=None):
     s2.add_argument("--limit", type=int)
     s2.add_argument("--depth", type=int)
     s2.add_argument("--workers", type=int)
+    s3 = sub.add_parser("export", help="volcar partidas analizadas a JSON para importar en la web")
+    s3.add_argument("--out", default="export.json")
     for sp in sub.choices.values():
         sp.add_argument("--user", default="me", help="nombre del usuario en la app (por defecto 'me')")
     args = p.parse_args(argv)
